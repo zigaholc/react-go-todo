@@ -3,6 +3,7 @@ import { CheckCircleFillIcon } from '@primer/octicons-react'
 import useSWR from 'swr'
 import './App.css'
 import { AddTodo } from './components/AddTodo'
+import axios from 'axios'
 
 export interface Todo {
   id: number
@@ -14,7 +15,7 @@ export interface Todo {
 export const ENDPOINT = 'http://localhost:4000'
 
 const fetcher = (url: string) =>
-  fetch(`${ENDPOINT}/${url}`).then((res) => res.json)
+  axios.get(`${ENDPOINT}/${url}`).then((res) => res.data)
 
 function App() {
   const { data, mutate } = useSWR<Todo[]>('api/todos', fetcher)
@@ -44,11 +45,11 @@ function App() {
               key={`todo__${todo.id}`}
               icon={
                 todo.done ? (
-                  <ThemeIcon color="teal" size={24} radius="xl">
+                  <ThemeIcon color="green" size={24} radius="xl">
                     <CheckCircleFillIcon size={20} />
                   </ThemeIcon>
                 ) : (
-                  <ThemeIcon color="green" size={24} radius="xl">
+                  <ThemeIcon color="red" size={24} radius="xl">
                     <CheckCircleFillIcon size={20} />
                   </ThemeIcon>
                 )

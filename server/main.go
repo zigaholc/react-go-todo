@@ -19,7 +19,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000",
+		AllowOrigins: "http://127.0.0.1:3000",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
@@ -63,7 +63,7 @@ func main() {
 		for index, todo := range todos {
 			// If the ID matches the passed ID set the DONE parameter
 			for todo.ID == id {
-				todos[index].Done = true
+				todos[index].Done = !todos[index].Done
 				break // exit the for loop
 			}
 		}
