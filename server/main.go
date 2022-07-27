@@ -5,10 +5,11 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/rs/xid"
 )
 
 type Todo struct {
-	ID    int    `json:"id"`
+	ID    string `json:"id"`
 	Title string `json:"title"`
 	Done  bool   `json:"done"`
 	Body  string `json:"body"`
@@ -40,7 +41,8 @@ func main() {
 		}
 
 		// Create an ID for the new todo
-		todo.ID = len(todos) + 1
+		id := xid.New()
+		todo.ID = id.String()
 
 		// Append the new todo to the existing todos slice
 		todos = append(todos, *todo)
@@ -53,9 +55,9 @@ func main() {
 	// Handle the PATCH method ( set the DONE parameter )
 	app.Patch("/api/todos/:id/done", func(c *fiber.Ctx) error {
 		// Get the ID passed in the URL
-		id, err := c.ParamsInt("id")
+		id := c.Params("id")
 
-		if err != nil {
+		if id == "" {
 			return c.Status(401).SendString("Invalid ID!")
 		}
 
@@ -73,6 +75,25 @@ func main() {
 
 	// Handle the GET method ( return all todos )
 	app.Get("/api/todos", func(c *fiber.Ctx) error {
+		return c.JSON(todos)
+	})
+
+	// Handle the DELETE method
+	app.Delete("/api/todos/:id/delete", func(c *fiber.Ctx) error {
+		// Get the ID
+		id := c.Params("id")
+
+		if id == "" {
+			return c.Status(401).SendString("Invalid ID!")
+		}
+
+		// Loop through all todos
+		for index, todo := range todos {
+			for todo.ID == id {
+				todos = append(todos[:index], todos[index+1:]...)
+				break
+			}
+		}
 		return c.JSON(todos)
 	})
 

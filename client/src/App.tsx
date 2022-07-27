@@ -1,4 +1,12 @@
-import { Box, List, ThemeIcon } from '@mantine/core'
+import {
+  Box,
+  List,
+  ThemeIcon,
+  Button,
+  Space,
+  Card,
+  ActionIcon,
+} from '@mantine/core'
 import { CheckCircleFillIcon } from '@primer/octicons-react'
 import useSWR from 'swr'
 import './App.css'
@@ -28,35 +36,52 @@ function App() {
     mutate(updated)
   }
 
+  async function deleteHandler(id: number) {
+    const updated = await fetch(`${ENDPOINT}/api/todos/${id}/delete`, {
+      method: 'DELETE',
+    }).then((res) => res.json())
+
+    mutate(updated)
+  }
+
   return (
     <Box
       sx={(theme) => ({
         padding: '2rem',
         width: '100%',
-        maxWidth: '40rem',
+        maxWidth: '50rem',
         margin: '0 auto',
       })}
     >
-      <List spacing="xs" size="sm" mb={12} center>
+      <List spacing="md" size="sm" mb={12} center>
         {data?.map((todo) => {
           return (
-            <List.Item
-              onClick={() => markTodoAsDone(todo.id)}
+            <Card
               key={`todo__${todo.id}`}
-              icon={
-                todo.done ? (
-                  <ThemeIcon color="green" size={24} radius="xl">
-                    <CheckCircleFillIcon size={20} />
-                  </ThemeIcon>
-                ) : (
-                  <ThemeIcon color="red" size={24} radius="xl">
-                    <CheckCircleFillIcon size={20} />
-                  </ThemeIcon>
-                )
-              }
+              style={{
+                display: 'flex',
+                backgroundColor: 'transparent',
+              }}
+              mb={12}
             >
+              <ActionIcon
+                mr={5}
+                variant="filled"
+                color={todo.done ? 'teal' : 'red'}
+                onClick={() => markTodoAsDone(todo.id)}
+              >
+                <CheckCircleFillIcon />
+              </ActionIcon>
               {todo.title}
-            </List.Item>
+              <Button
+                color="red"
+                compact
+                onClick={() => deleteHandler(todo.id)}
+                style={{ marginLeft: 'auto' }}
+              >
+                X
+              </Button>
+            </Card>
           )
         })}
       </List>

@@ -2,7 +2,10 @@ module github.com/zigaxholc/react-go-todo
 
 go 1.18
 
-require github.com/gofiber/fiber/v2 v2.35.0
+require (
+	github.com/gofiber/fiber/v2 v2.35.0
+	github.com/rs/xid v1.4.0
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
